@@ -1,0 +1,41 @@
+class LiftSim(object):
+
+    def __init__(self,queues, capacity):
+        self.queues=queues
+        self.capacity=capacity
+        
+    def theLift(self):
+        queues=[list(i) for i in self.queues]
+        target=[]
+        ans=[0]
+        start=0
+        maxp=len(queues)
+        direction=1
+        people=0
+        capac=self.capacity
+    
+        while queues.count([])!=len(queues) or len(target)!=0:
+            for i in range(start,maxp,direction):
+                while i in target:
+                    people-=1
+                    if i!= ans[-1]:
+                        ans.append(i)
+                    target.remove(i)
+                if queues[i]:
+                    for j in queues[i][:]:
+                        if (j>i and direction+1) or (not direction+1 and j<i):          #check if the person wants to go UP
+                            if people<capac:
+                                queues[i].remove(j)    #people go into lift
+                                target.append(j)       #target floors
+                                people+=1
+                                if i!=ans[-1]:        
+                                    ans.append(i)      #stops at floor to pick up people
+                            elif people>=capac:
+                                if i!=ans[-1]:
+                                    ans.append(i)
+            direction *=-1
+            start,maxp=maxp+direction,start+direction
+        if ans[-1]!=0:
+                return ans+[0]
+        else:
+            return ans
